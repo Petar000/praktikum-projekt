@@ -10,7 +10,8 @@ public class Sirene {
         this.lokacija = lokacija;
         this.stanje = stanje;
     }
-
+    public Sirene() {
+    }
     public void paljenje(int sirenaID) {
         System.out.println("Sirena " + sirenaID + " je upaljena.");
         UredCivilneZastite.obavijestiCentarUPuli(sirenaID);
