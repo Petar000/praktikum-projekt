@@ -11,18 +11,20 @@ public class Sirene {
         this.stanje = stanje;
     }
 
-    public void paljenje() {
-        System.out.println("Sirena " + id_sirene + " je upaljena.");
+    public void paljenje(int sirenaID) {
+        System.out.println("Sirena " + sirenaID + " je upaljena.");
+        UredCivilneZastite.obavijestiCentarUPuli(sirenaID);
     }
 
-    public void gasenje() {
-        System.out.println("Sirena " + id_sirene + " je ugašena.");
+    public void gasenje(int sirenaID) {
+        System.out.println("Sirena " + sirenaID + " je ugašena.");
     }
 
-    public void dojavaStanja(String novoStanje) {
-        System.out.println("Sirena " + id_sirene + " je promijenila stanje u: " + novoStanje);
+    public void dojavaStanja(int sirenaID, String novoStanje) {
+        System.out.println("Sirena " + sirenaID + " je promijenila stanje u: " + novoStanje);
         stanje = novoStanje;
     }
+
 
     public int getId_sirene() {
         return id_sirene;
