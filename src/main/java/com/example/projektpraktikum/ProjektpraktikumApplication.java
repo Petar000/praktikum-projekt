@@ -17,10 +17,14 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception{
+	public void run(String... args) throws Exception {
 		String sql = "SELECT * FROM sirene";
 		List<Sirene> sireneList = jdbcTemplate.query(sql,
 				BeanPropertyRowMapper.newInstance(Sirene.class));
 		sireneList.forEach(System.out::println);
+		String sql2 = "SELECT * FROM regije";
+		List<Regije> regijeList = jdbcTemplate.query(sql2,
+				BeanPropertyRowMapper.newInstance(Regije.class));
+		regijeList.forEach(System.out::println);
 	}
 }
