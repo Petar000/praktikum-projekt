@@ -22,15 +22,16 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 		List<Sirene> sireneList = jdbcTemplate.query(sql,
 				BeanPropertyRowMapper.newInstance(Sirene.class));
 		sireneList.forEach(System.out::println);
-		String sql2 = "SELECT * FROM regije";
-		List<Regije> regijeList = jdbcTemplate.query(sql2,
-				BeanPropertyRowMapper.newInstance(Regije.class));
-		regijeList.forEach(System.out::println);
+		String sql2 = "SELECT * FROM ured";
+		List<Ured> uredList = jdbcTemplate.query(sql2,
+				BeanPropertyRowMapper.newInstance(Ured.class));
+		uredList.forEach(System.out::println);
 
-		int sirenaID = 4;
+		int sirenaID = 6;
 		String sql3 = "SELECT * FROM sirene WHERE id_sirene = " + sirenaID;
 		Sirene sirena = jdbcTemplate.queryForObject(sql3, BeanPropertyRowMapper.newInstance(Sirene.class));
+		sirena = new Sirene(sirena.getId_sirene(), sirena.getLokacija(), sirena.getStanje(), jdbcTemplate);
 
-		sirena.paljenje(sirenaID);
+		sirena.gasenje(sirenaID);
 	}
 }

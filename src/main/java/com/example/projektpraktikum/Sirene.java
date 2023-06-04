@@ -1,24 +1,44 @@
 package com.example.projektpraktikum;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 public class Sirene {
     private int id_sirene;
     private String lokacija;
     private String stanje;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    public Sirene() {
+    }
 
-    public Sirene(int id_sirene, String lokacija, String stanje) {
+    public Sirene(int id_sirene, String lokacija, String stanje, JdbcTemplate jdbcTemplate) {
         this.id_sirene = id_sirene;
         this.lokacija = lokacija;
         this.stanje = stanje;
-    }
-    public Sirene() {
+        this.jdbcTemplate = jdbcTemplate;
     }
     public void paljenje(int sirenaID) {
         System.out.println("Sirena " + sirenaID + " je upaljena.");
-        UredCivilneZastite.obavijestiCentarUPuli(sirenaID);
+
+        String sql1 = "UPDATE sirene SET stanje = 'Upaljeno' WHERE id_sirene = ?";
+        String sql2 = "UPDATE sirene_ured SET stanje = 'Upaljeno' WHERE id_sirene = ?";
+        jdbcTemplate.update(sql1, sirenaID);
+        jdbcTemplate.update(sql2, sirenaID);
+
+        Sirene_ured.obavijestiCentarOPaljenju(sirenaID);
     }
 
     public void gasenje(int sirenaID) {
         System.out.println("Sirena " + sirenaID + " je ugašena.");
+
+        String sql1 = "UPDATE sirene SET stanje = 'Ugašeno' WHERE id_sirene = ?";
+        String sql2 = "UPDATE sirene_ured SET stanje = 'Ugašeno' WHERE id_sirene = ?";
+        jdbcTemplate.update(sql1, sirenaID);
+        jdbcTemplate.update(sql2, sirenaID);
+
+        Sirene_ured.obavijestiCentarOGasenju(sirenaID);
     }
 
     public void dojavaStanja(int sirenaID, String novoStanje) {

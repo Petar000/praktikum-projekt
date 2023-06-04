@@ -1,13 +1,15 @@
 package com.example.projektpraktikum;
 import java.util.List;
 
-public class UredCivilneZastite {
-    private String ime;
+public class Sirene_ured {
     private List<Sirene> sveSirene;
+    private List<Ured> uredi;
+    private int id;
 
-    public UredCivilneZastite(String ime, List<Sirene> sveSirene) {
-        this.ime = ime;
+    public Sirene_ured(List<Sirene> sveSirene, List<Ured> uredi, int id) {
         this.sveSirene = sveSirene;
+        this.uredi = uredi;
+        this.id = id;
     }
 
     public void paljenjeSvihSirena() {
@@ -46,8 +48,11 @@ public class UredCivilneZastite {
                     ", Stanje: " + sirena.getStanje());
         }
     }
-    public static void obavijestiCentarUPuli(int sirenaID) {
-        System.out.println("Sirena s ID-em" + sirenaID + "se upalila ručno.");
+    public static void obavijestiCentarOPaljenju(int sirenaID) {
+        System.out.println("Sirena s ID-em" + sirenaID + " se upalila ručno.");
+    }
+    public static void obavijestiCentarOGasenju(int sirenaID) {
+        System.out.println("Sirena s ID-em" + sirenaID + " se ugasila ručno.");
     }
 
 }
