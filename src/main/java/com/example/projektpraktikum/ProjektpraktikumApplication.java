@@ -7,10 +7,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
+import org.springframework.context.annotation.ComponentScan;
+
 @SpringBootApplication
+@ComponentScan(basePackages = "com.example.projektpraktikum")
 public class ProjektpraktikumApplication implements CommandLineRunner {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private Provjera_sustava provjeraSustava;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjektpraktikumApplication.class, args);
@@ -27,9 +32,20 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 				BeanPropertyRowMapper.newInstance(Ured.class));
 		uredList.forEach(System.out::println);
 
+		//Timer timer = new Timer();
+		//Provjera_sustava provjeraSustava = new Provjera_sustava(timer, jdbcTemplate);
+		provjeraSustava.pokreniTimer();
+		/*
+		Sirene sirene = new Sirene();
+		sirene.setJdbcTemplate(jdbcTemplate);
+		int id = 5;
+		sirene.gasenje(id);    */
+		/*  ukljucit posli
+		int id = 5;
 		Sirene_ured sireneUredi = new Sirene_ured();
 		sireneUredi.setJdbcTemplate(jdbcTemplate);
-		sireneUredi.gasenjeSvihSirena();   // ERROR KAD POZIVA METODU gasenje()
+		sireneUredi.gasenjeSvihSirena();
+		*/
 		//sireneUredi.pratiStanjeSirena();
 		/*
 		String regija = "Pula";
@@ -40,11 +56,5 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 		int id = 10;
 		sirene.paljenje(id);
 		 */
-/*
-		int sirenaID = 5;
-		String sql3 = "SELECT * FROM sirene WHERE id_sirene = " + sirenaID;
-		Sirene sirena = jdbcTemplate.queryForObject(sql3, BeanPropertyRowMapper.newInstance(Sirene.class));
-		sirena = new Sirene(sirena.getId_sirene(), sirena.getLokacija(), sirena.getStanje(), sirena.getRegija(), jdbcTemplate);
-*/
 	}
 }

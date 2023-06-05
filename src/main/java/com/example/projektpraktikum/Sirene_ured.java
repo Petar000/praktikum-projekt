@@ -26,6 +26,7 @@ public class Sirene_ured {
         String sql = "SELECT * FROM sirene";
         List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
         for (Sirene sirena : sveSirene) {
+            sirena.setJdbcTemplate(jdbcTemplate);
             sirena.paljenje(sirena.getId_sirene());
         }
         obavijestOPaljenjuSvih();
@@ -35,22 +36,29 @@ public class Sirene_ured {
         String sql = "SELECT * FROM sirene";
         List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
         for (Sirene sirena : sveSirene) {
+            sirena.setJdbcTemplate(jdbcTemplate);
             sirena.gasenje(sirena.getId_sirene());
         }
         obavijestOGasenjuSvih();
     }
 
     public void paljenjeSirene(int sirenaID) {
+        String sql = "SELECT * FROM sirene";
+        List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
         for (Sirene sirena : sveSirene) {
             if (sirena.getId_sirene() == sirenaID) {
+                sirena.setJdbcTemplate(jdbcTemplate);
                 sirena.paljenje(sirenaID);
                 break;
             }
         }
     }
     public void gasenjeSirene(int sirenaID) {
+        String sql = "SELECT * FROM sirene";
+        List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
         for (Sirene sirena : sveSirene) {
             if (sirena.getId_sirene() == sirenaID) {
+                sirena.setJdbcTemplate(jdbcTemplate);
                 sirena.gasenje(sirenaID);
                 break;
             }
