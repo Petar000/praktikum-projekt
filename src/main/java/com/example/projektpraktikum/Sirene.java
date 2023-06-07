@@ -3,26 +3,27 @@ package com.example.projektpraktikum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import java.util.List;
 
 public class Sirene {
     private int id_sirene;
     private String lokacija;
     private String stanje;
     private String regija;
+    private String obavijest;
     @Autowired
     private JdbcTemplate jdbcTemplate;
     public Sirene() {
     }
 
-    public Sirene(int id_sirene, String lokacija, String stanje, String regija, JdbcTemplate jdbcTemplate) {
+    public Sirene(int id_sirene, String lokacija, String stanje, String regija, String obavijest, JdbcTemplate jdbcTemplate) {
         this.id_sirene = id_sirene;
         this.lokacija = lokacija;
         this.stanje = stanje;
         this.regija = regija;
+        this.obavijest = obavijest;
         this.jdbcTemplate = jdbcTemplate;
     }
-    public void paljenje(int sirenaID) {
+    public void paljenje(int sirenaID, boolean ručno) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je upaljena.");
 
@@ -32,10 +33,11 @@ public class Sirene {
         jdbcTemplate.update(sql2, sirenaID);
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
+
         Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
     }
 
-    public void gasenje(int sirenaID) {
+    public void gasenje(int sirenaID, boolean ručno) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je ugašena.");
 
@@ -45,45 +47,40 @@ public class Sirene {
         jdbcTemplate.update(sql2, sirenaID);
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
+
         Sirene_ured.obavijestiCentarOGasenju(sirena.getLokacija());
     }
-
-    public void dojavaStanja(int sirenaID, String novoStanje) {
-        System.out.println("Sirena " + sirenaID + " je promijenila stanje u: " + novoStanje);
-        stanje = novoStanje;
-    }
-
 
     public int getId_sirene() {
         return id_sirene;
     }
-
     public void setId_sirene(int id_sirene) {
         this.id_sirene = id_sirene;
     }
-
     public String getLokacija() {
         return lokacija;
     }
-
     public void setLokacija(String lokacija) {
         this.lokacija = lokacija;
     }
-
     public String getStanje() {
         return stanje;
     }
-
     public void setStanje(String stanje) {
         this.stanje = stanje;
     }
-
     public String getRegija() {
-        return stanje;
+        return regija;
+    }
+    public void setRegija(String regija) {
+        this.regija = regija;
+    }
+    public String getObavijest() {
+        return obavijest;
     }
 
-    public void setRegija(String stanje) {
-        this.stanje = stanje;
+    public void setObavijest(String obavijest) {
+        this.obavijest = obavijest;
     }
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -96,6 +93,8 @@ public class Sirene {
                 "id_sirene=" + id_sirene +
                 ", lokacija='" + lokacija + '\'' +
                 ", stanje='" + stanje + '\'' +
+                ", regija='" + regija + '\'' +
+                ", obavijest='" + obavijest + '\'' +
                 '}';
     }
 }
