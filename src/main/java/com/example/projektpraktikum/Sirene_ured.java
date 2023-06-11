@@ -22,30 +22,34 @@ public class Sirene_ured {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void paljenjeSvihSirena() {
-        System.out.println("Paljenje svih sirena. ");
+    public void paljenjeSvihSirena(String stanje) {
+        System.out.println("Paljenje svih sirena. Novo stanje: " + stanje);
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
-        String updateSql = "UPDATE sirene SET stanje = 'Upaljeno'";
-        jdbcTemplate.update(updateSql);
+        String updateSql1 = "UPDATE sirene SET stanje = ?";
+        String updateSql2 = "UPDATE sirene_ured SET stanje = ?";
+        jdbcTemplate.update(updateSql1, stanje);
+        jdbcTemplate.update(updateSql2, stanje);
     }
 
     public void gasenjeSvihSirena() {
         System.out.println("Gašenje svih sirena. ");
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
-        String updateSql = "UPDATE sirene SET stanje = 'Ugašeno'";
-        jdbcTemplate.update(updateSql);
+        String updateSql1 = "UPDATE sirene SET stanje = 'Ugašeno'";
+        String updateSql2 = "UPDATE sirene_ured SET stanje = 'Ugašeno'";
+        jdbcTemplate.update(updateSql1);
+        jdbcTemplate.update(updateSql2);
     }
 
-    public void paljenjeSirene(int sirenaID) {
+    public void paljenjeSirene(int sirenaID, String stanje) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je upaljena.");
 
-        String sql1 = "UPDATE sirene SET stanje = 'Upaljeno' WHERE id_sirene = ?";
-        String sql2 = "UPDATE sirene_ured SET stanje = 'Upaljeno' WHERE id_sirene = ?";
-        jdbcTemplate.update(sql1, sirenaID);
-        jdbcTemplate.update(sql2, sirenaID);
+        String sql1 = "UPDATE sirene SET stanje = ? WHERE id_sirene = ?";
+        String sql2 = "UPDATE sirene_ured SET stanje = ? WHERE id_sirene = ?";
+        jdbcTemplate.update(sql1, stanje, sirenaID);
+        jdbcTemplate.update(sql2, stanje, sirenaID);
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
@@ -62,18 +66,18 @@ public class Sirene_ured {
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
     }
-    public void paljenjeSirenaRegije(String regija) {
+    public void paljenjeSirenaRegije(String regija, String stanje) {
         String sql = "SELECT * FROM sirene_ured WHERE regija = ?";
         List<Sirene_ured> sireneUredi = jdbcTemplate.query(sql, new Object[]{regija}, BeanPropertyRowMapper.newInstance(Sirene_ured.class));
 
         if (!sireneUredi.isEmpty()) {
-            System.out.println("Paljenje sirena u regiji: " + regija);
+            System.out.println("Paljenje sirena u regiji: " + regija + ". Novo stanje: " + stanje);
 
-            String updateSql1 = "UPDATE sirene SET stanje = 'Upaljeno' WHERE regija = ?";
-            jdbcTemplate.update(updateSql1, regija);
+            String updateSql1 = "UPDATE sirene SET stanje = ? WHERE regija = ?";
+            jdbcTemplate.update(updateSql1, stanje, regija);
 
-            String updateSql2 = "UPDATE sirene_ured SET stanje = 'Upaljeno' WHERE regija = ?";
-            jdbcTemplate.update(updateSql2, regija);
+            String updateSql2 = "UPDATE sirene_ured SET stanje = ? WHERE regija = ?";
+            jdbcTemplate.update(updateSql2, stanje, regija);
 
         } else {
             System.out.println("Nema sirena u regiji: " + regija);
@@ -97,22 +101,22 @@ public class Sirene_ured {
             System.out.println("Nema sirena u regiji: " + regija);
         }
     }
-    public void obavijest(int sirenaID, String obavijest) {
-        System.out.println("Sirena " + sirenaID + " ima novu obavijest: " + obavijest);
+    public void ispravnost(int sirenaID, String ispravnost) {
+        System.out.println("Sirena " + sirenaID + " je promijenila stanje o ispravnosti: " + ispravnost);
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
-        String sql1 = "UPDATE sirene SET obavijest = ? WHERE id_sirene = ?";
-        String sql2 = "UPDATE sirene_ured SET obavijest = ? WHERE id_sirene = ?";
-        jdbcTemplate.update(sql1, obavijest, sirenaID);
-        jdbcTemplate.update(sql2, obavijest, sirenaID);
+        String sql1 = "UPDATE sirene SET ispravnost = ? WHERE id_sirene = ?";
+        String sql2 = "UPDATE sirene_ured SET ispravnost = ? WHERE id_sirene = ?";
+        jdbcTemplate.update(sql1, ispravnost, sirenaID);
+        jdbcTemplate.update(sql2, ispravnost, sirenaID);
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
     }
-    public void obavijestZaSve(String obavijest){
+    public void ispravnostZaSve(String ispravnost){
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
-        String updateSql = "UPDATE sirene SET obavijest = ?";
+        String updateSql = "UPDATE sirene SET ispravnost = ?";
         for (Sirene sirena : sireneList) {
-            jdbcTemplate.update(updateSql, obavijest);
+            jdbcTemplate.update(updateSql, ispravnost);
         }
     }
 
@@ -123,7 +127,7 @@ public class Sirene_ured {
         for (Sirene sirena : sveSirene) {
             sirena.setJdbcTemplate(jdbcTemplate);
             System.out.println("Sirena ID: " + sirena.getId_sirene() + ", Lokacija: " + sirena.getLokacija() +
-                    ", Stanje: " + sirena.getStanje() + ", Obavijest: " + sirena.getObavijest());
+                    ", Stanje: " + sirena.getStanje() + ", Ispravnost: " + sirena.getIspravnost());
         }
     }
     public static void obavijestiCentarOPaljenju(String lokacija) {

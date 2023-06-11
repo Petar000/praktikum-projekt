@@ -59,22 +59,19 @@ public class Provjera_sustava {
             Calendar now = Calendar.getInstance();
             if (now.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && now.get(Calendar.DAY_OF_MONTH) <= 7 &&
                     now.get(Calendar.HOUR_OF_DAY) == 12 && now.get(Calendar.MINUTE) == 0 && now.get(Calendar.SECOND) == 0) {
-                String obavijest = "Prestanak opasnosti";
+                String stanje = "Prestanak opasnosti";
                 Sirene_ured sireneUredi1 = new Sirene_ured();
-                System.out.println("Paljenje svih sirena.");
+                System.out.println("Paljenje svih sirena zbog testiranja sustava.");
                 sireneUredi1.setJdbcTemplate(jdbcTemplate);
-                sireneUredi1.obavijestZaSve(obavijest);
-                sireneUredi1.paljenjeSvihSirena();
+                sireneUredi1.paljenjeSvihSirena(stanje);
                 try {
                     Thread.sleep(10000); // Pauza od 10 sekundi
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String obavijest2 = "Ispravno";
                 Sirene_ured sireneUredi2 = new Sirene_ured();
                 System.out.println("Gašenje svih sirena.");
                 sireneUredi2.setJdbcTemplate(jdbcTemplate);
-                sireneUredi2.obavijestZaSve(obavijest2);
                 sireneUredi2.gasenjeSvihSirena();
             }
         }
