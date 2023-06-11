@@ -53,7 +53,7 @@ public class Sirene {
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
-        Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
+        Sirene_ured.obavijestiCentarOGasenju(sirena.getLokacija());
     }
 
     public int getId_sirene() {

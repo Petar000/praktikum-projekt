@@ -9,8 +9,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/sireneured")
 public class Sirene_ured {
-    private List<Sirene> sveSirene;
-    private List<Ured> uredi;
+    private int id_sirene;
+    private String lokacija;
+    private String stanje;
+    private String regija;
+    private String ispravnost;
+    private int id_ureda;
     private int id;
 
     @Autowired
@@ -18,9 +22,13 @@ public class Sirene_ured {
     public Sirene_ured() {
     }
 
-    public Sirene_ured(List<Sirene> sveSirene, List<Ured> uredi, int id, JdbcTemplate jdbcTemplate) {
-        this.sveSirene = sveSirene;
-        this.uredi = uredi;
+    public Sirene_ured(int id_sirene, String lokacija, String stanje, String regija, String ispravnost, int id_ureda, int id, JdbcTemplate jdbcTemplate) {
+        this.id_sirene = id_sirene;
+        this.lokacija = lokacija;
+        this.stanje = stanje;
+        this.regija = regija;
+        this.ispravnost = ispravnost;
+        this.id_ureda = id_ureda;
         this.id = id;
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -71,7 +79,6 @@ public class Sirene_ured {
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
-        Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
     }
 
     @PatchMapping("/{regija}/paljenje-regije")
@@ -126,9 +133,11 @@ public class Sirene_ured {
     public void ispravnostZaSve(@RequestBody String ispravnost){
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
-        String updateSql = "UPDATE sirene SET ispravnost = ?";
+        String updateSql1 = "UPDATE sirene SET ispravnost = ?";
+        String updateSql2 = "UPDATE sirene_ured SET ispravnost = ?";
         for (Sirene sirena : sireneList) {
-            jdbcTemplate.update(updateSql, ispravnost);
+            jdbcTemplate.update(updateSql1, ispravnost);
+            jdbcTemplate.update(updateSql2, ispravnost);
         }
     }
 
@@ -140,13 +149,38 @@ public class Sirene_ured {
         return sveSirene;
     }
 
-    @DeleteMapping("/obrisi")
+    @DeleteMapping("/izbrisi")
     public void obrisiSirenu(@RequestParam String lokacija) {
 
-        String deleteSql = "DELETE FROM sirene WHERE lokacija = ?";
-        jdbcTemplate.update(deleteSql, lokacija);
+        String deleteSql1 = "DELETE FROM sirene WHERE lokacija = ?";
+        String deleteSql2 = "DELETE FROM sirene_ured WHERE lokacija = ?";
+        jdbcTemplate.update(deleteSql1, lokacija);
+        jdbcTemplate.update(deleteSql2, lokacija);
 
         System.out.println("Sirena na lokaciji: " + lokacija + " je izbrisana.");
+    }
+
+    @PostMapping("/dodaj")
+    public ResponseEntity<String> dodajSirenuUred(@RequestBody Sirene_ured novaSirenaUred) {
+
+        String insertSirenaSql = "INSERT INTO sirene (lokacija, stanje, regija, id_ureda, ispravnost) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(insertSirenaSql, novaSirenaUred.getLokacija(),
+                novaSirenaUred.getStanje(), novaSirenaUred.getRegija(), novaSirenaUred.getId_ureda(), novaSirenaUred.getIspravnost());
+
+        // Dohvati ime ureda na temelju id_ureda
+        String selectImeUredaSql = "SELECT ime FROM ured WHERE id_ureda = ?";
+        String imeUreda = jdbcTemplate.queryForObject(selectImeUredaSql, String.class, novaSirenaUred.getId_ureda());
+
+        String insertSirenaUredSql = "INSERT INTO sirene_ured (id_sirene, lokacija, stanje, regija, id_ureda, ime, ispravnost) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(insertSirenaUredSql, novaSirenaUred.getId_sirene(), novaSirenaUred.getLokacija(),
+                novaSirenaUred.getStanje(), novaSirenaUred.getRegija(), novaSirenaUred.getId_ureda(),
+                imeUreda, novaSirenaUred.getIspravnost());
+
+        return ResponseEntity.ok("Sirena u uredu uspješno dodana");
     }
 
     public static void obavijestiCentarOPaljenju(String lokacija) {
@@ -156,19 +190,28 @@ public class Sirene_ured {
         System.out.println("Sirena na lokaciji " + lokacija + " se ugasila ručno.");
     }
 
-    public List<Sirene> getSveSirene() {
-        return sveSirene;
+    public int getId_sirene() {
+        return id_sirene;
     }
 
-    public void setSveSirene(List<Sirene> sveSirene) {
-        this.sveSirene = sveSirene;
+    public String getLokacija() {
+        return lokacija;
     }
 
-    public List<Ured> getUredi() {
-        return uredi;
+    public String getStanje() {
+        return stanje;
     }
-    public void setUredi(List<Ured> uredi) {
-        this.uredi = uredi;
+
+    public String getRegija() {
+        return regija;
+    }
+
+    public String getIspravnost() {
+        return ispravnost;
+    }
+
+    public int getId_ureda() {
+        return id_ureda;
     }
 
     public int getId() {

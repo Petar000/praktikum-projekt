@@ -27,45 +27,7 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 		List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
 		sireneList.forEach(System.out::println);
 
-		String sql2 = "SELECT * FROM ured";
-		List<Ured> uredList = jdbcTemplate.query(sql2,
-				BeanPropertyRowMapper.newInstance(Ured.class));
-		uredList.forEach(System.out::println);
-
 		provjeraSustava.pokreniTimer();
 
-		/*
-
-		// Testiranja
-		Sirene sirene = new Sirene();
-		sirene.setJdbcTemplate(jdbcTemplate);
-		int id = 5;
-		String obavijest1 = "Ispravno";
-		String obavijest2 = "Neispravno";
-		String obavijest3 = "Pokvaren zvučnik";
-
-		String stanje1 = "Upozorenje na nadolazeću opasnost";
-		String stanje2 = "Neposredna opasnost";
-		String stanje3 = "Vatrogasna uzbuna";
-
-		sirene.paljenje(id,stanje1);
-
-		Sirene_ured sireneUredi = new Sirene_ured();
-		sireneUredi.setJdbcTemplate(jdbcTemplate);
-		sireneUredi.paljenjeSvihSirena(stanje1);
-
-		sireneUredi.pratiStanjeSirena();
-
-		String regija = "Pula";
-		sireneUredi.gasenjeSirenaRegije(regija);
-
-		int id2 = 4;
-		sireneUredi.gasenjeSirene(id2);
-
-		sireneUredi.ispravnost(id2, obavijest2);
-
-		sireneUredi.paljenjeSvihSirena(stanje2);
-
-		 */
 	}
 }
