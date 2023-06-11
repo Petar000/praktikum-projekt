@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 @RestController
@@ -137,6 +138,15 @@ public class Sirene_ured {
         List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
 
         return sveSirene;
+    }
+
+    @DeleteMapping("/obrisi")
+    public void obrisiSirenu(@RequestParam String lokacija) {
+
+        String deleteSql = "DELETE FROM sirene WHERE lokacija = ?";
+        jdbcTemplate.update(deleteSql, lokacija);
+
+        System.out.println("Sirena na lokaciji: " + lokacija + " je izbrisana.");
     }
 
     public static void obavijestiCentarOPaljenju(String lokacija) {
