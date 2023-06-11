@@ -3,8 +3,7 @@ package com.example.projektpraktikum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sirene")
@@ -27,7 +26,8 @@ public class Sirene {
         this.ispravnost = ispravnost;
         this.jdbcTemplate = jdbcTemplate;
     }
-    public void paljenje(int sirenaID, String stanje) {
+    @PatchMapping("/{sirenaID}/paljenje")
+    public void paljenje(@PathVariable int sirenaID, @RequestBody String stanje) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je upaljena.");
 
@@ -41,7 +41,8 @@ public class Sirene {
         Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
     }
 
-    public void gasenje(int sirenaID) {
+    @PatchMapping("/{sirenaID}/gasenje")
+    public void gasenje(@PathVariable int sirenaID) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je ugašena.");
 
@@ -52,7 +53,7 @@ public class Sirene {
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
-        Sirene_ured.obavijestiCentarOGasenju(sirena.getLokacija());
+        Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
     }
 
     public int getId_sirene() {

@@ -2,9 +2,11 @@ package com.example.projektpraktikum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("/sireneured")
 public class Sirene_ured {
     private List<Sirene> sveSirene;
     private List<Ured> uredi;
@@ -21,8 +23,8 @@ public class Sirene_ured {
         this.id = id;
         this.jdbcTemplate = jdbcTemplate;
     }
-
-    public void paljenjeSvihSirena(String stanje) {
+    @PutMapping("/paljenje-svih")
+    public void paljenjeSvihSirena(@RequestBody String stanje) {
         System.out.println("Paljenje svih sirena. Novo stanje: " + stanje);
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
@@ -32,6 +34,7 @@ public class Sirene_ured {
         jdbcTemplate.update(updateSql2, stanje);
     }
 
+    @PutMapping("/gasenje-svih")
     public void gasenjeSvihSirena() {
         System.out.println("Gašenje svih sirena. ");
         String sql = "SELECT * FROM sirene";
@@ -42,7 +45,8 @@ public class Sirene_ured {
         jdbcTemplate.update(updateSql2);
     }
 
-    public void paljenjeSirene(int sirenaID, String stanje) {
+    @PatchMapping("/{sirenaID}/paljenje-sirene")
+    public void paljenjeSirene(@PathVariable int sirenaID, @RequestBody String stanje) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je upaljena.");
 
@@ -52,9 +56,10 @@ public class Sirene_ured {
         jdbcTemplate.update(sql2, stanje, sirenaID);
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
-
     }
-    public void gasenjeSirene(int sirenaID) {
+
+    @PatchMapping("/{sirenaID}/gasenje-sirene")
+    public void gasenjeSirene(@PathVariable int sirenaID) {
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         System.out.println("Sirena " + sirenaID + " je ugašena.");
 
@@ -65,8 +70,11 @@ public class Sirene_ured {
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
 
+        Sirene_ured.obavijestiCentarOPaljenju(sirena.getLokacija());
     }
-    public void paljenjeSirenaRegije(String regija, String stanje) {
+
+    @PatchMapping("/{regija}/paljenje-regije")
+    public void paljenjeSirenaRegije(@PathVariable String regija, @RequestBody String stanje) {
         String sql = "SELECT * FROM sirene_ured WHERE regija = ?";
         List<Sirene_ured> sireneUredi = jdbcTemplate.query(sql, new Object[]{regija}, BeanPropertyRowMapper.newInstance(Sirene_ured.class));
 
@@ -84,7 +92,8 @@ public class Sirene_ured {
         }
     }
 
-    public void gasenjeSirenaRegije(String regija) {
+    @PatchMapping("/{regija}/gasenje-regije")
+    public void gasenjeSirenaRegije(@PathVariable String regija) {
         String sql = "SELECT * FROM sirene_ured WHERE regija = ?";
         List<Sirene_ured> sireneUredi = jdbcTemplate.query(sql, new Object[]{regija}, BeanPropertyRowMapper.newInstance(Sirene_ured.class));
 
@@ -101,7 +110,8 @@ public class Sirene_ured {
             System.out.println("Nema sirena u regiji: " + regija);
         }
     }
-    public void ispravnost(int sirenaID, String ispravnost) {
+    @PatchMapping("/{sirenaID}/ispravnost")
+    public void ispravnost(@PathVariable int sirenaID, @RequestBody String ispravnost) {
         System.out.println("Sirena " + sirenaID + " je promijenila stanje o ispravnosti: " + ispravnost);
         String sql = "SELECT * FROM sirene WHERE id_sirene = ?";
         String sql1 = "UPDATE sirene SET ispravnost = ? WHERE id_sirene = ?";
@@ -111,7 +121,8 @@ public class Sirene_ured {
 
         Sirene sirena = jdbcTemplate.queryForObject(sql, new Object[]{sirenaID}, BeanPropertyRowMapper.newInstance(Sirene.class));
     }
-    public void ispravnostZaSve(String ispravnost){
+    @PatchMapping("/ispravnost-za-sve")
+    public void ispravnostZaSve(@RequestBody String ispravnost){
         String sql = "SELECT * FROM sirene";
         List<Sirene> sireneList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
         String updateSql = "UPDATE sirene SET ispravnost = ?";
@@ -120,16 +131,14 @@ public class Sirene_ured {
         }
     }
 
-    public void pratiStanjeSirena() {
-        String sql = "SELECT * FROM sirene";
+    @GetMapping("/sve-sirene")
+    public List<Sirene> pratiStanjeSirena() {
+        String sql = "SELECT * FROM sirene_ured";
         List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
-        System.out.println("Stanje sirena na području Istarske županije:");
-        for (Sirene sirena : sveSirene) {
-            sirena.setJdbcTemplate(jdbcTemplate);
-            System.out.println("Sirena ID: " + sirena.getId_sirene() + ", Lokacija: " + sirena.getLokacija() +
-                    ", Stanje: " + sirena.getStanje() + ", Ispravnost: " + sirena.getIspravnost());
-        }
+
+        return sveSirene;
     }
+
     public static void obavijestiCentarOPaljenju(String lokacija) {
         System.out.println("Sirena na lokaciji " + lokacija + " se upalila ručno.");
     }

@@ -34,6 +34,8 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 
 		provjeraSustava.pokreniTimer();
 
+		/*
+
 		// Testiranja
 		Sirene sirene = new Sirene();
 		sirene.setJdbcTemplate(jdbcTemplate);
@@ -63,5 +65,7 @@ public class ProjektpraktikumApplication implements CommandLineRunner {
 		sireneUredi.ispravnost(id2, obavijest2);
 
 		sireneUredi.paljenjeSvihSirena(stanje2);
+
+		 */
 	}
 }
