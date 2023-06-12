@@ -143,7 +143,7 @@ public class Sirene_ured {
 
     @GetMapping("/sve-sirene")
     public List<Sirene> pratiStanjeSirena() {
-        String sql = "SELECT * FROM sirene_ured";
+        String sql = "SELECT * FROM sirene";
         List<Sirene> sveSirene = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sirene.class));
 
         return sveSirene;
