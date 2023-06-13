@@ -11,13 +11,11 @@ public class Provjera_sustava {
     private Timer timer;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    public Provjera_sustava(Timer timer, JdbcTemplate jdbcTemplate) {
-        this.timer = timer;
+    public Provjera_sustava(JdbcTemplate jdbcTemplate) {
+        this.timer = new Timer();
         this.jdbcTemplate = jdbcTemplate;
     }
     public void pokreniTimer() {
-        timer = new Timer();
-
         // Postavljanje vriemena za prvi poziv
         Calendar firstRunTime = Calendar.getInstance();
         firstRunTime.set(Calendar.DAY_OF_MONTH, 1); // Prvi dan mjeseca
@@ -27,15 +25,16 @@ public class Provjera_sustava {
         firstRunTime.set(Calendar.HOUR_OF_DAY, 12);
         firstRunTime.set(Calendar.MINUTE, 0);
         firstRunTime.set(Calendar.SECOND, 0);
-        /*
+/*
         Calendar firstRunTime = Calendar.getInstance();      // TEST za moje vrijeme
         firstRunTime.set(Calendar.YEAR, 2023);
         firstRunTime.set(Calendar.MONTH, Calendar.JUNE);
-        firstRunTime.set(Calendar.DAY_OF_MONTH, 6);
-        firstRunTime.set(Calendar.HOUR_OF_DAY, 1);
-        firstRunTime.set(Calendar.MINUTE, 14);
+        firstRunTime.set(Calendar.DAY_OF_MONTH, 13);
+        firstRunTime.set(Calendar.HOUR_OF_DAY, 19);
+        firstRunTime.set(Calendar.MINUTE, 17);
         firstRunTime.set(Calendar.SECOND, 0);
-*/
+ */
+
         // Provjera je li prvi poziv već prošao ovog mjeseca
         if (firstRunTime.getTimeInMillis() < System.currentTimeMillis()) {
             // Pomičemo prvi poziv na sljedeći mjesec
